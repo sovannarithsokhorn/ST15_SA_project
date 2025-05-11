@@ -1,0 +1,196 @@
+@extends('backend.layout.master')
+@section('c_menu-open','menu-open')
+@section('c_active','active')
+@section('content')
+<style>
+  .truncated-description {
+  white-space: nowrap; /* Prevent the text from wrapping onto multiple lines */
+  overflow: hidden;    /* Hide the overflow text */
+  text-overflow: ellipsis; /* Add '...' when the text overflows */
+  max-width: 200px; /* Adjust the max-width based on your table design */
+  }
+</style>
+     <!-- Content Header (Page header) -->
+     <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Celeb LIST</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">List</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+
+        <div class="card card-success card-outline">
+            
+
+            <!-- /.card -->
+          </div>
+      </div>
+      <!-- /.content-header -->
+
+       <!-- Main content --> 
+       <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+
+            <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Celebs Table</h3>
+    
+                    <div class="card-tools">
+                      <div class="input-group input-group-sm">
+                        
+    
+                        <div class="input-group-append">
+                            <a href="{{url('bceleb/create')}}" type="button" class="btn btn-primary btn-block"><i class="fas fa-plus-square"></i>  Create Celeb
+                            </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>star</th>
+                          <th>picture</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        @foreach ($celebs as $key => $value)
+                            <tr>
+                                <td>{{++$key}}</td>
+                                <td>{{$value->title}}</td>
+                                <td class="truncated-description">{{ $value->description }}</td>
+                                <td>{{$value->stars}}</td>
+                                <td>{{$value->picture}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-info"><i class="far fa-eye"></i>view</button>
+                                    <a href="{{url('bceleb/'.$value->id.'/edit')}}" class="btn btn-outline-primary"><i class="far fa-edit"></i>edit</a>
+                                    <form action="{{ url('bceleb/'.$value->id) }}" method="POST" style="display: inline;">
+                                      @csrf
+                                      @method('DELETE')
+                                      <button type="submit" onclick="confirmDelete(event)" class="btn btn-outline-danger">
+                                          <i class="fas fa-trash"></i> Delete
+                                      </button>
+                                  </form>
+                                  
+                                  <script>
+                                  function confirmDelete(e) {
+                                      e.preventDefault();
+                                      const form = e.target.closest('form');
+                                      
+                                      Swal.fire({
+                                          title: 'Are you sure?',
+                                          text: "This action cannot be undone!",
+                                          icon: 'warning',
+                                          showCancelButton: true,
+                                          confirmButtonColor: '#d33',
+                                          cancelButtonColor: '#3085d6',
+                                          confirmButtonText: 'Delete',
+                                          cancelButtonText: 'Cancel',
+                                          reverseButtons: true
+                                      }).then((result) => {
+                                          if (result.isConfirmed) {
+                                              form.submit();
+                                          }
+                                      });
+                                  }
+                                  </script>
+
+
+                                </td>
+                            </tr>
+                        @endforeach
+                        
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+          </div>
+        </div>
+       </div>
+
+@endsection
+
+@section('type_message')
+<script>
+    $(function() {
+      var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+  
+      @if(session('flash_message'))
+        Toast.fire({
+            icon: 'success',
+            title: '{{session('flash_message')}}'
+            })
+      @endif
+
+      @if(session('info'))
+        Toast.fire({
+            icon: 'info',
+            title: '{{session('info')}}'
+            })
+      @endif
+
+      @if(session('error'))
+        Toast.fire({
+            icon: 'error',
+            title: '{{session('error')}}'
+            })
+      @endif
+
+
+      $('.swalDefaultSuccess').click(function() {
+        Toast.fire({
+          icon: 'success',
+          title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        })
+      });
+      $('.swalDefaultInfo').click(function() {
+        Toast.fire({
+          icon: 'info',
+          title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        })
+      });
+      $('.swalDefaultError').click(function() {
+        Toast.fire({
+          icon: 'error',
+          title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        })
+      });
+      $('.swalDefaultWarning').click(function() {
+        Toast.fire({
+          icon: 'warning',
+          title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        })
+      });
+     
+  
+      
+      
+    });
+  </script>
+
+@endsection
