@@ -1,15 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-# Install PHP and Composer
-apt-get update && apt-get install -y php php-common php-cli php-zip php-mbstring php-xml
+# Use Render's built-in PHP
+export PATH=/opt/php/bin:$PATH
 
 # Install Composer
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install dependencies
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+/usr/local/bin/composer install --no-dev --optimize-autoloader
 
-# Optimize Laravel
+# Laravel optimization
 php artisan optimize
 
